@@ -11,6 +11,7 @@ const data = new PogObject("unstonkdelay", {
 register("blockBreak", (block) => {
   if(!data.toggled) return;
   if (!Dungeon.inDungeon) return;
+  if(block?.getType()?.getRegistryName().includes("melon")) return;
   breakBlock(block.getX(), block.getY(), block.getZ());
 })
 
