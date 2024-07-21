@@ -5,22 +5,18 @@ import PogObject from "../PogData";
 
 const data = new PogObject("unstonkdelay", {
   "toggled": true,
-  "ping": 50
+  "ping": 50,
 }, "settings.json");
 
 register("blockBreak", (block) => {
   if(!data.toggled) return;
   if (!Dungeon.inDungeon) return;
-  if(block?.getType()?.getRegistryName().includes("melon")) return;
+  if(block?.getType()?.getRegistryName()?.includes("melon")) return;
   breakBlock(block.getX(), block.getY(), block.getZ());
-})
+});
 
 function breakBlock(x, y, z) {
-  if(Date.now()-pickSwap<=500 && canSwap) {
-    canSwap = false;
-    return;
-  }
-  canSwap = false;
+  if(!Player.getInventory()?.getItems()[slot]?.getRegistryName()?.includes("pickaxe")) return;
 
   let numPicks = 0;
   let inv = Player.getInventory()?.getItems();
@@ -38,11 +34,9 @@ function breakBlock(x, y, z) {
 
 
 const C09PacketHeldItemChange = Java.type("net.minecraft.network.play.client.C09PacketHeldItemChange");
-let pickSwap = 0;
-let canSwap = false;
+let slot = 0;
 register("packetSent", (packet, event) => {
-  pickSwap = Date.now();
-  canSwap = true;
+  slot = packet.func_149614_c();
 }).setFilteredClass(C09PacketHeldItemChange);
 
 
