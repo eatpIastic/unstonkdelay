@@ -5,7 +5,7 @@ import PogObject from "../PogData";
 
 const data = new PogObject("unstonkdelay", {
   "toggled": true,
-  "ping": 50,
+  "ping": 50
 }, "settings.json");
 
 register("blockBreak", (block) => {
@@ -27,6 +27,7 @@ function breakBlock(x, y, z) {
 
   let block = new net.minecraft.util.BlockPos(x, y, z)
   let blockstate = World.getBlockAt(x, y, z).getState();
+  
   setTimeout( () => {
     World.getWorld().func_175656_a(block, blockstate);
   }, data.ping);
@@ -41,15 +42,18 @@ register("packetSent", (packet, event) => {
 
 
 register("command", (...args) => {
-  if(!args?.[0]) {
-    ChatLib.chat(`&cunstonkdelay:\n&b/usd toggle (${data.toggled})\n&b/usd ping # (currently: ${data.ping}) (default 50)`);
-  } else if(args[0] == "toggle") {
-    data.toggled = !data.toggled;
-    data.save();
-    ChatLib.chat(`&cunstonkdelay ${data.toggled ? "enabled" : "disabled"}`);
-  } else if(args[0] == "ping") {
-    data.ping = args[1];
-    data.save();
-    ChatLib.chat(`&cunstonkdelay ping set to ${data.ping}`);
+  switch(args[0]) {
+    case "toggle":
+      data.toggled = !data.toggled;
+      data.save();
+      ChatLib.chat(`&bunstonkdelay ${data.toggled ? "&aenabled" : "&cdisabled"}`);
+      break;
+    case "ping":
+      data.ping = args[1];
+      data.save();
+      ChatLib.chat(`&bunstonkdelay ping set to ${data.ping}`);
+    default:
+      ChatLib.chat(`&cunstonkdelay:\n&b/usd toggle (${data.toggled})\n&b/usd ping # (currently: ${data.ping}) (default 50)`);
+      break;
   }
-}).setName("usd");
+}).setName("unstonkdelay").setAliases(["usd"]);
